@@ -18,7 +18,6 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -33,6 +32,8 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	class UCameraComponent* Camera;
 	
+	UPROPERTY(VisibleAnywhere)
+	class UStaticMeshComponent* SniperGunComp;	
 public:
 	// mouse 회전
 	void Turn(float Value);
@@ -41,4 +42,14 @@ public:
 	// 이동
 	void MoveForward(float Value);
 	void MoveRight(float Value);
+	
+	// 점프
+	void PlayerJump();
+	
+	
+	// 총쏘기
+	UPROPERTY(EditDefaultsOnly, Category=Effect)
+	class UParticleSystem* BulletEffect;
+	
+	void Fire();
 };
