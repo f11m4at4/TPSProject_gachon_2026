@@ -3,6 +3,7 @@
 
 #include "Public/TPSPlayer.h"
 
+#include "Blueprint/UserWidget.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -43,6 +44,12 @@ ATPSPlayer::ATPSPlayer()
 		SniperGunComp->SetRelativeScale3D(FVector(0.187500,0.187500,0.187500));
 	}
 	
+	// UI load
+	ConstructorHelpers::FClassFinder<UUserWidget> TempUI(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/UI/WBP_Crosshair.WBP_Crosshair_C'"));
+	if (TempUI.Succeeded())
+	{
+		CrosshairUIWidget = TempUI.Class;
+	}
 	
 	// 월드에 Instance로 등록하면 자동으로 PlayerController가
 	// Possess 한다.
@@ -57,6 +64,9 @@ void ATPSPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	// crosshair instance 생성
+	CrosshairUI = CreateWidget(GetWorld(), CrosshairUIWidget);
+	CrosshairUI->AddToViewport();
 }
 
 // Called every frame
@@ -77,6 +87,9 @@ void ATPSPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 	PlayerInputComponent->BindAxis(TEXT("Vertical"), this, &ATPSPlayer::MoveForward);
 	PlayerInputComponent->BindAction(TEXT("Jump"), IE_Pressed, this, &ATPSPlayer::PlayerJump);
 	PlayerInputComponent->BindAction(TEXT("Fire"), IE_Pressed, this, &ATPSPlayer::Fire);
+	// sniper 조준 모드
+	PlayerInputComponent->BindAction(TEXT("Aim"), IE_Pressed, this, &ATPSPlayer::Aim);
+	PlayerInputComponent->BindAction(TEXT("Aim"), IE_Released, this, &ATPSPlayer::Aim);
 }
 
 void ATPSPlayer::Turn(float Value)
@@ -112,7 +125,7 @@ void ATPSPlayer::PlayerJump()
 void ATPSPlayer::Fire()
 {
 	FHitResult HitInfo;
-	FVector StartLocation = GetActorLocation();
+	FVector StartLocation = Camera->GetComponentLocation();
 	FVector EndLocation = StartLocation + Camera->GetForwardVector() * 50000;
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(this);
@@ -135,3 +148,19 @@ void ATPSPlayer::Fire()
 		}
 	}
 }
+
+void ATPSPlayer::Aim()
+{
+	// 카메라의 fov 를 설정
+	if (bAiming == false)
+	{
+		bAiming = true;
+		Camera->SetFieldOfView(45);
+	}
+	else
+	{
+		bAiming = false;
+		Camera->SetFieldOfView(90);
+	}
+}
+

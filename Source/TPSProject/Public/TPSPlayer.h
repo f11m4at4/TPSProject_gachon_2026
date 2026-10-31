@@ -29,7 +29,7 @@ protected:
 	// SringArm 컴포넌트 추가
 	UPROPERTY(VisibleAnywhere)
 	class USpringArmComponent* SpringArm;
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UCameraComponent* Camera;
 	
 	UPROPERTY(VisibleAnywhere)
@@ -52,4 +52,16 @@ public:
 	class UParticleSystem* BulletEffect;
 	
 	void Fire();
+	
+	// crosshair UI
+	UPROPERTY(EditDefaultsOnly, Category=UI)
+	TSubclassOf<class UUserWidget> CrosshairUIWidget;
+	// crosshair instance
+	UPROPERTY()
+	class UUserWidget* CrosshairUI;
+	
+	// sniper aim 입력처리 함수
+	void Aim();
+	// aim 중인지 여부
+	bool bAiming = false;
 };
