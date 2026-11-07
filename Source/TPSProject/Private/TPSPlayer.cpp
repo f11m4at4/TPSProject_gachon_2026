@@ -67,6 +67,8 @@ void ATPSPlayer::BeginPlay()
 	// crosshair instance 생성
 	CrosshairUI = CreateWidget(GetWorld(), CrosshairUIWidget);
 	CrosshairUI->AddToViewport();
+	// sniper instance 생성
+	SniperUI = CreateWidget(GetWorld(), SniperUIWidget);
 }
 
 // Called every frame
@@ -156,11 +158,16 @@ void ATPSPlayer::Aim()
 	{
 		bAiming = true;
 		Camera->SetFieldOfView(45);
+		// ui Change
+		SniperUI->AddToViewport();
+		CrosshairUI->RemoveFromParent();
 	}
 	else
 	{
 		bAiming = false;
-		Camera->SetFieldOfView(90);
+		Camera->SetFieldOfView(90);// ui Change
+		SniperUI->RemoveFromParent();
+		CrosshairUI->AddToViewport();
 	}
 }
 

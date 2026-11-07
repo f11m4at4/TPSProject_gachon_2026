@@ -64,4 +64,13 @@ public:
 	void Aim();
 	// aim 중인지 여부
 	bool bAiming = false;
+	
+	
+	// ---------- sniper ui --------------
+	// crosshair UI
+	UPROPERTY(EditDefaultsOnly, Category=UI)
+	TSubclassOf<class UUserWidget> SniperUIWidget;
+	// crosshair instance
+	UPROPERTY()
+	class UUserWidget* SniperUI;
 };
