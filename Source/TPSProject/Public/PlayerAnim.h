@@ -24,4 +24,7 @@ public:
 	
 public:
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
+	
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Player Anim")
+	void PlayFireAnimation();
 };

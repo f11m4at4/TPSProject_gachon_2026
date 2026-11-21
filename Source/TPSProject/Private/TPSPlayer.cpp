@@ -3,6 +3,8 @@
 
 #include "Public/TPSPlayer.h"
 
+#include "PlayerAnim.h"
+#include "PlayerMoveComp.h"
 #include "Blueprint/UserWidget.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -32,15 +34,15 @@ ATPSPlayer::ATPSPlayer()
 	Camera->SetupAttachment(SpringArm);
 	
 	SniperGunComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SniperGunComp"));
-	SniperGunComp->SetupAttachment(GetMesh());
+	SniperGunComp->SetupAttachment(GetMesh(), TEXT("hand_rSocket"));
 	
 	ConstructorHelpers::FObjectFinder<UStaticMesh> TempGun(TEXT("/Script/Engine.StaticMesh'/Game/SniperGun/sniper11.sniper11'"));
 	if (TempGun.Succeeded())
 	{
 		SniperGunComp->SetStaticMesh(TempGun.Object);
 		// 배치
-		SniperGunComp->SetRelativeLocation(FVector(-10.852490,50.000000,120.000000));
-		SniperGunComp->SetRelativeRotation(FRotator(0.000000,0.000001,0.000000));
+		SniperGunComp->SetRelativeLocation(FVector(-33.475898,9.059893,-4.253204));
+		SniperGunComp->SetRelativeRotation(FRotator(12.874484,81.148078,7.023060));
 		SniperGunComp->SetRelativeScale3D(FVector(0.187500,0.187500,0.187500));
 	}
 	
@@ -57,6 +59,8 @@ ATPSPlayer::ATPSPlayer()
 	
 	// 몇단 점프까지 할지 지정
 	JumpMaxCount = 2;
+	
+	PlayerMoveComp = CreateDefaultSubobject<UPlayerMoveComp>(TEXT("PlayerMoveComp"));
 }
 
 // Called when the game starts or when spawned
@@ -126,6 +130,13 @@ void ATPSPlayer::PlayerJump()
 // 사용자가 발사버튼을 누르면 총을 쏜다.
 void ATPSPlayer::Fire()
 {
+	// Animation 재생
+	auto anim = Cast<UPlayerAnim>(GetMesh()->GetAnimInstance());
+	if (anim)
+	{
+		anim->PlayFireAnimation();
+	}
+	
 	FHitResult HitInfo;
 	FVector StartLocation = Camera->GetComponentLocation();
 	FVector EndLocation = StartLocation + Camera->GetForwardVector() * 50000;

@@ -73,4 +73,10 @@ public:
 	// crosshair instance
 	UPROPERTY()
 	class UUserWidget* SniperUI;
+	
+	
+	///////////////////////// User Component /////////////////////////////
+public:
+	UPROPERTY(VisibleAnywhere)
+	class UPlayerMoveComp* PlayerMoveComp;
 };
